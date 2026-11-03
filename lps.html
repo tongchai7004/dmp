@@ -300,6 +300,12 @@
                 </div>
 
                 <div class="flex items-center gap-3 ml-auto">
+                    <!-- ป้ายแสดงปีการศึกษาปัจจุบัน -->
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-50 dark:bg-slate-800/80 border border-teal-100 dark:border-slate-700 shadow-sm">
+                        <i class="ph ph-calendar-blank text-primary dark:text-teal-400 text-lg"></i>
+                        <span id="navYearDisplay" class="text-xs md:text-sm font-semibold text-primary dark:text-teal-400"></span>
+                    </div>
+
                     <button onclick="toggleProfilePopup(event)" class="md:hidden flex items-center gap-2 p-1.5 pr-3 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
                         <div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs" id="mobileProfileIcon">U</div>
                     </button>
@@ -330,32 +336,20 @@
                         </div>
                         
                         <!-- Charts Section -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 gap-6">
                             <!-- Chart 1: สถิติสถานะเอกสาร -->
                             <div class="bg-white dark:bg-darkCard p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
                                 <div class="flex items-center gap-3 mb-6">
                                     <div class="bg-teal-100 dark:bg-teal-900/30 text-primary p-2 rounded-xl">
                                         <i class="ph ph-chart-pie-slice text-2xl"></i>
                                     </div>
-                                    <h3 class="text-lg font-bold text-slate-800 dark:text-white">สถิติสถานะเอกสาร</h3>
+                                    <h3 class="text-lg font-bold text-slate-800 dark:text-white">สถิติบุคลากรที่ส่งงาน</h3>
                                 </div>
                                 <div class="relative h-64 w-full flex justify-center">
                                     <canvas id="statusChart"></canvas>
                                 </div>
                             </div>
 
-                            <!-- Chart 2: จำนวนการส่งงาน (แยกตามประเภท) -->
-                            <div class="bg-white dark:bg-darkCard p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 p-2 rounded-xl">
-                                        <i class="ph ph-chart-pie text-2xl"></i>
-                                    </div>
-                                    <h3 class="text-lg font-bold text-slate-800 dark:text-white">จำนวนการส่งงาน</h3>
-                                </div>
-                                <div class="relative h-64 w-full flex justify-center">
-                                    <canvas id="typeChart"></canvas>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -401,11 +395,8 @@
                     <div id="settingsContainer" class="max-w-5xl mx-auto hidden space-y-6">
                         <div class="bg-white dark:bg-darkCard rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6">
                             <h3 class="text-lg font-bold mb-6 flex items-center gap-2 text-primary"><i class="ph ph-gear"></i> ตั้งค่าระบบและข้อมูลโรงเรียน</h3>
-                            <form id="settingsForm" onsubmit="submitSettings(event)" class="space-y-6 max-w-lg">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">ชื่อโรงเรียน</label>
-                                    <input type="text" id="settingSchoolName" class="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white" value="โรงเรียนดงมันพิทยาคม">
-                                </div>
+                            <!-- 1. ส่วนตั้งค่าโรงเรียนและโลโก้ -->
+                            <form id="settingsForm" onsubmit="submitSettings(event)" class="space-y-6 max-w-lg mb-8 pb-8 border-b border-slate-100 dark:border-slate-800">
                                 <div>
                                     <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">โลโก้โรงเรียน</label>
                                     <div class="flex items-center gap-4">
@@ -418,6 +409,10 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">ชื่อโรงเรียน</label>
+                                    <input type="text" id="settingSchoolName" class="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white" value="โรงเรียนดงมันพิทยาคม">
+                                </div>
                                 <div id="settingsProgressArea" class="hidden flex-col items-center mb-4">
                                     <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mb-2">
                                         <div id="settingsProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-200" style="width: 0%"></div>
@@ -428,9 +423,27 @@
                                     </div>
                                 </div>
                                 <button type="submit" id="btnSubmitSettings" class="w-full bg-primary hover:bg-teal-700 text-white font-medium py-3 rounded-xl shadow-lg transition-all active:scale-95">
-                                    บันทึกการตั้งค่า
+                                    บันทึกข้อมูลโรงเรียน
                                 </button>
                             </form>
+
+                            <!-- 2. ส่วนตั้งค่าปีการศึกษา (บันทึกอัตโนมัติ ไม่ใช้ปุ่มร่วมกัน) -->
+                            <div class="space-y-6 max-w-lg">
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">จัดการภาคเรียน/ปีการศึกษา</label>
+                                        <button type="button" onclick="addNewYear()" class="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-colors flex items-center gap-2 active:scale-95 shrink-0">
+                                            <i class="ph ph-plus"></i> เพิ่มภาคเรียน/ปีการศึกษา
+                                        </button>
+                                    </div>
+                                    <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800/50">
+                                        <ul id="academicYearsList" class="divide-y divide-slate-200 dark:divide-slate-700 max-h-48 overflow-y-auto hide-scrollbar">
+                                            <!-- รายการปีการศึกษาจะถูกดึงมาแสดงที่นี่ -->
+                                        </ul>
+                                    </div>
+                                    <input type="hidden" id="settingCurrentYear">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -747,6 +760,72 @@
         </div>
     </div>
 
+    <!-- Confirm Set Year Modal -->
+    <div id="confirmSetYearModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-darkCard rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center transform scale-95 transition-transform duration-300" id="confirmSetYearModalContent">
+            <div class="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/30 text-primary flex items-center justify-center mx-auto mb-4">
+                <i class="ph ph-calendar-check text-4xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-white">ยืนยันการเปลี่ยนภาคเรียน/ปีการศึกษา</h3>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">คุณต้องการตั้งค่าภาคเรียน/ปีการศึกษา <span id="confirmYearDisplay" class="font-bold text-primary"></span> ให้เป็นปีปัจจุบันใช่หรือไม่? <br>ข้อมูลในหน้าระบบจะเปลี่ยนไปแสดงผลของปีนี้</p>
+            <div class="flex gap-3">
+                <button onclick="closeModal('confirmSetYearModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium transition-colors">ยกเลิก</button>
+                <button id="confirmSetYearBtn" class="flex-1 py-3 bg-primary hover:bg-teal-700 text-white rounded-xl font-medium shadow-lg transition-all active:scale-95">ยืนยัน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Year Modal -->
+    <div id="confirmDeleteYearModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-darkCard rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center transform scale-95 transition-transform duration-300" id="confirmDeleteYearModalContent">
+            <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 text-red-500 flex items-center justify-center mx-auto mb-4">
+                <i class="ph ph-trash text-4xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2 text-slate-800 dark:text-white">ยืนยันการลบ</h3>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">ลบภาคเรียน/ปีการศึกษา "<span id="deleteYearDisplay" class="font-bold text-slate-700 dark:text-slate-300"></span>"?</p>
+            
+            <!-- ส่วนแจ้งเตือนและบังคับลบ -->
+            <div id="deleteYearWarningArea" class="hidden mb-6 text-left bg-red-50 dark:bg-red-900/20 p-4 rounded-xl border border-red-100 dark:border-red-800/50">
+                <p id="deleteYearWarningText" class="text-red-600 dark:text-red-400 text-sm font-semibold mb-3"></p>
+                <label class="flex items-start gap-2 mb-3 cursor-pointer">
+                    <input type="checkbox" id="forceDeleteYearCheckbox" onchange="toggleForceDeleteYear()" class="mt-0.5 text-red-500 focus:ring-red-500 rounded border-red-300 cursor-pointer">
+                    <span class="text-xs text-slate-700 dark:text-slate-300 leading-tight">บังคับลบข้อมูล (เอกสารและโฟลเดอร์ในปีนี้จะถูกลบทิ้งทั้งหมด)</span>
+                </label>
+                <input type="text" id="confirmDeleteYearInput" oninput="checkForceDeleteYearInput()" placeholder="พิมพ์คำว่า 'ยืนยัน' เพื่อลบ" class="w-full px-3 py-2 border border-red-200 dark:border-red-700 rounded-lg text-sm outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 dark:bg-slate-800 dark:text-white disabled:opacity-50 disabled:bg-slate-100" disabled>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal('confirmDeleteYearModal')" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium transition-colors">ยกเลิก</button>
+                <button id="confirmDeleteYearBtn" class="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">ลบข้อมูล</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Year Modal -->
+    <div id="addYearModal" class="fixed inset-0 bg-slate-900/60 z-[60] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="bg-white dark:bg-darkCard rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform scale-95 transition-all duration-300" id="addYearModalContent">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <h3 class="text-lg font-bold flex items-center gap-2 text-primary"><i class="ph ph-calendar-plus"></i> เพิ่มภาคเรียน/ปีการศึกษา</h3>
+                <button onclick="closeModal('addYearModal')" class="text-slate-400 hover:text-red-500 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-sm">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="addYearForm" onsubmit="submitAddYear(event)">
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">ภาคเรียน/ปีการศึกษา <span class="text-red-500">*</span></label>
+                            <input type="text" id="newYearInputModal" required placeholder="เช่น 1/2569" class="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-primary/50 text-slate-800 dark:text-white">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-primary hover:bg-teal-700 text-white font-medium py-3 rounded-xl shadow-lg transition-all pb-safe active:scale-95">
+                        บันทึกข้อมูล
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="fixed inset-0 bg-slate-900/60 z-[60] hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white dark:bg-darkCard rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform translate-y-full sm:translate-y-10 transition-all duration-300" id="editProfileModalContent">
@@ -758,17 +837,38 @@
             </div>
             <div class="p-6">
                 <form id="editProfileForm" onsubmit="submitEditProfile(event)">
-                    <div class="space-y-4 mb-6">
+                    <!-- ส่วนฟอร์มปกติ -->
+                    <div id="editProfileFormContainer" class="space-y-4 mb-6">
+                        
+                        <!-- พื้นที่แสดงรูปปัจจุบัน -->
+                        <div class="flex flex-col items-center justify-center mb-2">
+                            <div class="w-24 h-24 rounded-full bg-teal-100 text-primary flex items-center justify-center font-bold text-4xl border-4 border-white shadow-md shadow-slate-200 dark:shadow-slate-900/50 overflow-hidden" id="currentProfilePicPreview">
+                                <!-- รูปหรือตัวอักษรจะถูกใส่ด้วย JS -->
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium mb-1">ชื่อ-สกุล</label>
                             <input type="text" id="profileNameInput" required class="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-primary/50 text-slate-800 dark:text-white">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">รูปประจำตัว (แนบไฟล์รูปภาพ)</label>
+                            <label class="block text-sm font-medium mb-1">เปลี่ยนรูปประจำตัว (1:1)</label>
                             <input type="file" id="profilePicInput" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-primary hover:file:bg-teal-100 dark:file:bg-slate-700 dark:file:text-white cursor-pointer transition-colors">
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-primary hover:bg-teal-700 text-white font-medium py-3 rounded-xl shadow-lg transition-all pb-safe active:scale-95">
+
+                    <!-- พื้นที่สำหรับ Crop รูป (ซ่อนไว้ตอนแรก) -->
+                    <div id="cropContainer" class="hidden flex-col items-center mb-6">
+                        <div class="w-full max-w-sm h-64 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden mb-4">
+                            <img id="cropImageTarget" src="" class="max-w-full">
+                        </div>
+                        <div class="flex gap-3 w-full">
+                            <button type="button" onclick="cancelCrop()" class="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white rounded-xl font-medium transition-colors">ยกเลิก</button>
+                            <button type="button" onclick="confirmCrop()" class="flex-1 py-2.5 bg-primary hover:bg-teal-700 text-white rounded-xl font-medium shadow-lg active:scale-95 transition-all">ยืนยันรูปภาพ</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnSubmitProfile" class="w-full bg-primary hover:bg-teal-700 text-white font-medium py-3 rounded-xl shadow-lg transition-all pb-safe active:scale-95">
                         บันทึกข้อมูล
                     </button>
                 </form>
@@ -914,8 +1014,8 @@
 
         let currentPreviewId = null;
         let chartInstance = null;
-        let typeChartInstance = null; 
         const uploadControllers = {};
+        let isDeletingDoc = false; // เพิ่มตัวแปรสำหรับเช็คสถานะการลบเอกสาร
 
         function cancelUpload(id) {
             if (uploadControllers[id]) {
@@ -1167,6 +1267,19 @@
                 if (result.status === 'success') {
                     mockUsers = result.users;
                     isInitialLoadUsers = false; // โหลดเสร็จแล้ว
+                    
+                    // อัปเดตรูปโปรไฟล์ที่ Sidebar ทันทีเมื่อดึงข้อมูลสมาชิกเสร็จ
+                    if (state.user && state.user.id) {
+                        const currentUserData = mockUsers.find(u => u.username === state.user.id);
+                        if (currentUserData && currentUserData.profilePic) {
+                            const imgHtml = `<img src="${currentUserData.profilePic}" class="w-full h-full object-cover rounded-full">`;
+                            const desktopIcon = document.getElementById('profileIcon');
+                            const mobileIcon = document.getElementById('mobileProfileIcon');
+                            if(desktopIcon) desktopIcon.innerHTML = imgHtml;
+                            if(mobileIcon) mobileIcon.innerHTML = imgHtml;
+                        }
+                    }
+
                     if (state.view === 'users') renderUserManagement(); // วาดข้อมูลเฉพาะตอนอยู่หน้าจัดการสมาชิก
                     updatePendingUsersBadge(); // เพิ่มการอัปเดตตัวเลขแจ้งเตือน
                     
@@ -1249,16 +1362,22 @@
                     const docsChanged = JSON.stringify(mockFiles) !== JSON.stringify(newMockFiles);
                     const usersChanged = JSON.stringify(mockUsers) !== JSON.stringify(newUsers);
                     const groupsChanged = JSON.stringify(mockGroups) !== JSON.stringify(newGroups);
-                    const settingsChanged = schoolData.name !== newSettings.name || schoolData.logo !== newSettings.logo;
+                    const settingsChanged = schoolData.name !== newSettings.name || 
+                                            schoolData.logo !== newSettings.logo || 
+                                            schoolData.currentYear !== newSettings.currentYear || 
+                                            JSON.stringify(schoolData.yearsList) !== JSON.stringify(newSettings.yearsList);
 
                     if (docsChanged || usersChanged || groupsChanged || settingsChanged) {
-                        // ป้องกันการอัปเดตทับหากผู้ใช้กำลังอัปโหลดไฟล์อยู่
-                        if (Object.keys(uploadControllers).length > 0) return; 
+                        // ป้องกันการอัปเดตทับหากผู้ใช้กำลังอัปโหลดไฟล์ หรือกำลังลบเอกสารอยู่
+                        if (Object.keys(uploadControllers).length > 0 || isDeletingDoc) return;
 
                         // อัปเดตข้อมูลการตั้งค่าโรงเรียนแบบ Real-time
                         if (settingsChanged) {
                             schoolData.name = newSettings.name || 'โรงเรียนดงมันพิทยาคม';
                             schoolData.logo = newSettings.logo || null;
+                            schoolData.currentYear = newSettings.currentYear || schoolData.currentYear;
+                            schoolData.yearsList = newSettings.yearsList || schoolData.yearsList;
+                            
                             updateGlobalUI();
                             
                             // อัปเดตช่อง Input ด้วยเฉพาะกรณีที่ผู้ใช้ไม่ได้คลิกพิมพ์ค้างอยู่
@@ -1303,12 +1422,18 @@
                                     const profileNameEl = document.getElementById('profileNameDisplay');
                                     if (profileNameEl) profileNameEl.textContent = currentUserData.name;
                                     
-                                    const updateIconText = (elId) => {
+                                    const updateIcon = (elId) => {
                                         const el = document.getElementById(elId);
-                                        if (el && !el.innerHTML.includes('<img')) el.textContent = currentUserData.name.charAt(0);
+                                        if (el) {
+                                            if (currentUserData.profilePic) {
+                                                el.innerHTML = `<img src="${currentUserData.profilePic}" class="w-full h-full object-cover rounded-full">`;
+                                            } else if (!el.innerHTML.includes('<img')) {
+                                                el.textContent = currentUserData.name.charAt(0);
+                                            }
+                                        }
                                     };
-                                    updateIconText('profileIcon');
-                                    updateIconText('mobileProfileIcon');
+                                    updateIcon('profileIcon');
+                                    updateIcon('mobileProfileIcon');
                                     
                                     const roleDisplay = document.getElementById('profileRoleDisplay');
                                     if (roleDisplay) {
@@ -1524,8 +1649,8 @@
                 listArea.classList.remove('hidden');
                 filterBar.classList.remove('hidden');
                 
-                // หากยังไม่มีข้อมูล (mockFiles ยังโหลดไม่เสร็จ) ให้แสดงตัวหมุนไว้ก่อน
-                if (mockFiles.length === 0) {
+                // หากยังไม่เคยโหลดข้อมูลเลย (Initial Load) ให้แสดงตัวหมุนไว้ก่อน
+                if (isInitialLoad) {
                     const container = document.getElementById('fileListContainer');
                     if (container) {
                         container.innerHTML = `
@@ -1555,7 +1680,7 @@
             approvedContainer.innerHTML = '';
 
             const pendingUsers = mockUsers.filter(u => u.status === 'pending');
-            const approvedUsers = mockUsers.filter(u => u.status === 'approved');
+            const approvedUsers = mockUsers.filter(u => u.status === 'approved' || u.status === 'อนุมัติ');
 
             // 1. เรนเดอร์สมาชิกรออนุมัติ
             if(pendingUsers.length === 0) {
@@ -1624,7 +1749,7 @@
             const userIndex = mockUsers.findIndex(u => u.username === username);
             if (userIndex > -1) {
                 if (action === 'approve') {
-                    mockUsers[userIndex].status = 'approved';
+                    mockUsers[userIndex].status = 'อนุมัติ';
                     mockUsers[userIndex].name = mockUsers[userIndex].name.replace(/\s*\(รอตรวจสอบ\)/g, '');
                     showToast(`อนุมัติผู้ใช้ ${username} แล้ว`, 'success');
                 } else {
@@ -1640,7 +1765,7 @@
                 let payload = {};
                 if (action === 'approve') {
                     const user = mockUsers.find(u => u.username === username);
-                    payload = { action: 'updateUser', targetUser: username, status: 'approved', name: user.name };
+                    payload = { action: 'updateUser', targetUser: username, status: 'อนุมัติ', name: user.name };
                 } else {
                     payload = { action: 'deleteUser', targetUser: username };
                 }
@@ -1829,7 +1954,7 @@
             const userIndex = mockUsers.findIndex(u => u.username === username);
             if(userIndex > -1) {
                 if(action === 'approve') {
-                    mockUsers[userIndex].status = 'approved';
+                    mockUsers[userIndex].status = 'อนุมัติ';
                     showToast(`อนุมัติผู้ใช้ ${username} สำเร็จ`, 'success');
                 } else {
                     mockUsers.splice(userIndex, 1);
@@ -2108,7 +2233,7 @@
                 let teacherMap = {};
                 
                 // 1) โหลดรายชื่อบุคลากรทั้งหมดในระบบก่อน (เพื่อให้แสดงครบทุกคนแม้ยังไม่ส่งงาน)
-                mockUsers.filter(u => (u.role === 'staff' || u.role === 'admin' || u.role === 'บุคลากร' || u.role === 'แอดมิน') && u.status === 'approved').forEach(u => {
+                mockUsers.filter(u => (u.role === 'staff' || u.role === 'admin' || u.role === 'บุคลากร' || u.role === 'แอดมิน') && (u.status === 'approved' || u.status === 'อนุมัติ')).forEach(u => {
                     teacherMap[u.username] = { 
                         id: u.username, 
                         name: u.name, 
@@ -2118,8 +2243,11 @@
                     };
                 });
 
-                // 2) จัดกลุ่มและนับจำนวนเอกสารตามผู้ส่ง
+                // 2) จัดกลุ่มและนับจำนวนเอกสารตามผู้ส่ง (กรองเฉพาะปีปัจจุบัน)
                 mockFiles.forEach(f => {
+                    // ข้ามการคำนวณหากเอกสารไม่ใช่ปีการศึกษาปัจจุบัน
+                    if (f.year !== schoolData.currentYear) return;
+
                     // หากมีไฟล์แต่หา user ไม่เจอ (เช่นโดนลบ) ให้สร้างใหม่
                     if (!teacherMap[f.uploaderId]) {
                         teacherMap[f.uploaderId] = { id: f.uploaderId, name: f.uploaderName, total: 0, pending: 0, passed: 0, failed: 0, latestTimestamp: 0, hasPlan: false, hasProject: false };
@@ -2222,6 +2350,9 @@
                 if (state.view === 'mine' && f.uploaderId !== state.user.id) return false;
                 if (state.view === 'all' && state.selectedTeacher && f.uploaderId !== state.selectedTeacher.id) return false;
                 
+                // กรองให้แสดงเฉพาะไฟล์ของปีการศึกษาปัจจุบัน
+                if (f.year !== schoolData.currentYear) return false;
+                
                 const matchSearch = f.title.toLowerCase().includes(state.searchQuery) || f.uploaderName.toLowerCase().includes(state.searchQuery);
                 const matchType = state.filterType === '' || f.type === state.filterType;
                 const matchStatus = state.filterStatus === '' || f.status === state.filterStatus || (state.filterStatus === 'รอตรวจ' && f.status === 'รอตรวจ (ส่งใหม่)');
@@ -2229,7 +2360,15 @@
                 return matchSearch && matchType && matchStatus;
             });
 
-            filtered.sort((a, b) => b.timestamp - a.timestamp);
+            // เรียงลำดับปีการศึกษาจากน้อยไปมาก หากปีเท่ากันให้เรียงตามเวลาที่ส่ง (ใหม่สุดขึ้นก่อน)
+            filtered.sort((a, b) => {
+                const yearA = parseInt(a.year) || 0;
+                const yearB = parseInt(b.year) || 0;
+                if (yearA !== yearB) {
+                    return yearA - yearB;
+                }
+                return b.timestamp - a.timestamp;
+            });
 
             // ถ้าเป็นการเจาะจงครู ให้แสดงปุ่ม "ย้อนกลับ" ด้านบนสุด และชื่อครูในกรอบ
             if (state.selectedTeacher) {
@@ -2316,6 +2455,7 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                                 <div class="truncate flex-1">
                                     <h4 class="font-semibold text-slate-800 dark:text-slate-100 truncate text-base mb-1">${file.title}${file.extension || ''}</h4>
                                     <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                        <span class="text-[10px] bg-purple-50 dark:bg-slate-700/50 text-purple-600 dark:text-purple-300 px-2 py-0.5 rounded-md border border-purple-100 dark:border-slate-600">${file.year}</span>
                                         <span class="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-600">${file.type}</span>
                                         <span class="text-[10px] bg-blue-50 dark:bg-slate-700/50 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-md border border-blue-100 dark:border-slate-600">${file.group}</span>
                                     </div>
@@ -2349,34 +2489,43 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
 
         // ================= DASHBOARD & CHART =================
         function renderDashboard() {
-            // ดึงข้อมูลทั้งหมดโดยไม่มีการกรอง เพื่อให้ทุกคนเห็นข้อมูลรวมของระบบ
-            let data = mockFiles;
+            // กรองข้อมูลให้คำนวณเฉพาะปีการศึกษาปัจจุบัน
+            let data = mockFiles.filter(f => f.year === schoolData.currentYear);
 
-            const total = data.length;
+            // คำนวณจำนวนบุคลากรที่ได้รับอนุมัติแล้วทั้งหมด (แยกกลุ่มแอดมินหรือผู้ดูแลระบบออก หากไม่จำเป็นต้องส่งงาน)
+            const totalMembers = mockUsers.filter(u => (u.status === 'approved' || u.status === 'อนุมัติ') && (u.role === 'staff' || u.role === 'บุคลากร' || u.role === 'แอดมิน')).length;
+            
+            // หาจำนวนคนที่มีการส่งงานมาแล้วอย่างน้อย 1 ชิ้น
+            const membersSubmitted = new Set(data.map(f => f.uploaderId)).size;
+            
+            // คนที่ยังไม่ส่งงานเลย
+            const membersNotSubmitted = Math.max(0, totalMembers - membersSubmitted);
+
             const pending = data.filter(f => f.status === 'รอตรวจ' || f.status === 'รอตรวจ (ส่งใหม่)').length;
             const passed = data.filter(f => f.status === 'ผ่าน').length;
             const failed = data.filter(f => f.status === 'ไม่ผ่าน').length;
+            const total = data.length; // คงจำนวนเอกสารไว้ใช้ทำ Chart
 
             const cardsHtml = `
                 <div class="bg-white dark:bg-darkCard p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl"><i class="ph ph-files"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl"><i class="ph ph-users"></i></div>
                     <div>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">ส่งทั้งหมด</p>
-                        <h3 class="text-2xl font-bold dark:text-white">${total}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">บุคลากรทั้งหมด</p>
+                        <h3 class="text-2xl font-bold dark:text-white">${totalMembers} <span class="text-sm font-normal text-slate-400">คน</span></h3>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-darkCard p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-2xl"><i class="ph ph-clock"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl"><i class="ph ph-user-check"></i></div>
                     <div>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">รอตรวจสอบ</p>
-                        <h3 class="text-2xl font-bold dark:text-white">${pending}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">ส่งงานแล้ว</p>
+                        <h3 class="text-2xl font-bold dark:text-white">${membersSubmitted} <span class="text-sm font-normal text-slate-400">คน</span></h3>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-darkCard p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl"><i class="ph ph-check-circle"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl"><i class="ph ph-user-minus"></i></div>
                     <div>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">อนุมัติผ่านแล้ว</p>
-                        <h3 class="text-2xl font-bold dark:text-white">${passed}</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">ยังไม่ส่งงาน</p>
+                        <h3 class="text-2xl font-bold dark:text-white">${membersNotSubmitted} <span class="text-sm font-normal text-slate-400">คน</span></h3>
                     </div>
                 </div>
             `;
@@ -2388,9 +2537,9 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
 
             // เตรียมข้อมูลและสีสำหรับ Chart 1 (Doughnut)
             // หาก total = 0 ให้แสดงสีเทา (ไม่มีข้อมูล)
-            let statusLabels = ['ผ่าน', 'รอตรวจ', 'ไม่ผ่าน'];
-            let statusData = [passed, pending, failed];
-            let statusColors = ['#10b981', '#f59e0b', '#ef4444'];
+            let statusLabels = ['ส่งงานแล้ว', 'ยังไม่ส่งงาน'];
+            let statusData = [membersSubmitted, membersNotSubmitted];
+            let statusColors = ['#10b981', '#ef4444'];
             
             if (total === 0) {
                 statusLabels = ['ไม่มีข้อมูล'];
@@ -2424,51 +2573,10 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                     cutout: '70%'
                 }
             });
-
-            // เตรียมข้อมูลสำหรับ Chart 2 (Pie)
-            const typePlan = data.filter(f => f.type === 'แผนการจัดการเรียนรู้').length;
-            const typeProject = data.filter(f => f.type === 'โครงการสอนหรือกำหนดการสอน').length;
-            
-            let typeLabels = ['แผนการจัดการเรียนรู้', 'โครงการ/กำหนดการสอน'];
-            let typeData = [typePlan, typeProject];
-            let typeColors = ['#0C7C82', '#35B4B0'];
-
-            if (total === 0) {
-                typeLabels = ['ไม่มีข้อมูล'];
-                typeData = [1];
-                typeColors = ['#e2e8f0'];
-                if(isDark) typeColors = ['#334155'];
-            }
-
-            // Render Chart 2
-            const ctx2 = document.getElementById('typeChart').getContext('2d');
-            if(typeChartInstance) typeChartInstance.destroy();
-
-            typeChartInstance = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: typeLabels,
-                    datasets: [{
-                        data: typeData,
-                        backgroundColor: typeColors,
-                        borderWidth: 0,
-                        hoverOffset: total === 0 ? 0 : 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: textColor, font: { family: 'Sarabun' } } },
-                        tooltip: { enabled: total > 0 }
-                    },
-                    cutout: '70%'
-                }
-            });
         }
 
         function updateChartColors() {
-            if((chartInstance || typeChartInstance) && state.view === 'dashboard') {
+            if(chartInstance && state.view === 'dashboard') {
                 renderDashboard(); // Re-render to pick up new text colors
             }
         }
@@ -2530,7 +2638,8 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                     date: new Date().toLocaleDateString('th-TH'),
                     timestamp: tempId,
                     fileUrl: '#',
-                    extension: fileExt
+                    extension: fileExt,
+                    year: schoolData.currentYear
                 };
 
                 // 2. บันทึกลง LocalStorage
@@ -2542,7 +2651,14 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                 mockFiles.unshift(pendingDoc);
                 closeModal('uploadModal');
                 showToast('กำลังอัพโหลด...', 'success');
-                if (state.view === 'mine' || state.view === 'all') renderList();
+                
+                // เด้งไปที่หน้าหลัก (งานของฉัน หรือ งานทั้งหมด) ตามสิทธิ์ผู้ใช้
+                const targetPage = (state.role === 'exec' || state.role === 'ผู้บริหาร') ? 'all' : 'mine';
+                if (state.view !== targetPage) {
+                    window.location.hash = '#' + targetPage;
+                } else {
+                    renderList();
+                }
                 
                 // รีเซ็ตฟอร์มทันที และเปิดปุ่มให้พร้อมใช้งานสำหรับการเปิดหน้าต่างครั้งต่อไป
                 document.getElementById('uploadForm').reset();
@@ -2561,7 +2677,8 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                     group: group,
                     uploaderId: state.user.id,
                     uploaderName: state.user.name,
-                    extension: fileExt 
+                    extension: fileExt,
+                    year: schoolData.currentYear // เพิ่มบรรทัดนี้ เพื่อส่งปีการศึกษาปัจจุบันไปให้ Backend
                 };
 
                 const controller = new AbortController();
@@ -2572,11 +2689,12 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                     if (progress < 90) {
                         progress += Math.floor(Math.random() * 10) + 5;
                         if (progress > 90) progress = 90;
-                        const currentProgressBar = document.getElementById('prog-' + tempId);
-                        const currentProgressText = document.getElementById('prog-text-' + tempId);
-                        if(currentProgressBar) currentProgressBar.style.width = progress + '%';
-                        if(currentProgressText) currentProgressText.textContent = 'กำลังส่งข้อมูล... ' + progress + '%';
                     }
+                    // ย้ายการอัปเดตหน้าจอออกมานอกเงื่อนไข if 
+                    const currentProgressBar = document.getElementById('prog-' + tempId);
+                    const currentProgressText = document.getElementById('prog-text-' + tempId);
+                    if(currentProgressBar) currentProgressBar.style.width = progress + '%';
+                    if(currentProgressText) currentProgressText.textContent = 'กำลังส่งข้อมูล... ' + progress + '%';
                 }, 400);
 
                 fetch(WEB_APP_URL, {
@@ -2737,11 +2855,12 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                         if (progress < 90) {
                             progress += Math.floor(Math.random() * 10) + 5;
                             if (progress > 90) progress = 90;
-                            const currentProgressBar = document.getElementById('prog-' + id);
-                            const currentProgressText = document.getElementById('prog-text-' + id);
-                            if(currentProgressBar) currentProgressBar.style.width = progress + '%';
-                            if(currentProgressText) currentProgressText.textContent = 'กำลังอัปเดตไฟล์... ' + progress + '%';
                         }
+                        // ย้ายการอัปเดตหน้าจอออกมานอกเงื่อนไข if
+                        const currentProgressBar = document.getElementById('prog-' + id);
+                        const currentProgressText = document.getElementById('prog-text-' + id);
+                        if(currentProgressBar) currentProgressBar.style.width = progress + '%';
+                        if(currentProgressText) currentProgressText.textContent = 'กำลังอัปเดตไฟล์... ' + progress + '%';
                     }, 400);
 
                     fetch(WEB_APP_URL, {
@@ -2843,6 +2962,7 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
         document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
             if(deleteTargetId) {
                 const targetIdToDelete = deleteTargetId;
+                isDeletingDoc = true; // เปิดสถานะว่ากำลังดำเนินการลบอยู่
                 
                 // 1. ลบจากข้อมูลในเครื่อง, ปิดหน้าต่าง, แสดงผลทันที
                 mockFiles = mockFiles.filter(f => f.id !== targetIdToDelete);
@@ -2869,6 +2989,9 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                 .catch(error => {
                     showToast('การลบข้อมูลในพื้นหลังล้มเหลว', 'error');
                     fetchDocuments();
+                })
+                .finally(() => {
+                    isDeletingDoc = false; // ปิดสถานะให้กลับเป็นปกติเมื่อลบเสร็จสิ้น
                 });
             }
         });
@@ -2905,105 +3028,169 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
             }
         });
 
-        // ================= USER PROFILE ACTIONS =================
+        // ================= USER PROFILE ACTIONS (รวมระบบ CROP) =================
+        let profileCropper = null;
+        let croppedImageData = null;
+        let croppedMimeType = null;
+        let croppedExtension = null;
+
         function openEditProfileModal() {
             closeProfilePopup();
-            
-            // ใช้ชื่อจาก state.user แทน ทำให้เปิดหน้าต่างได้ทันทีโดยไม่ต้องรอ
             document.getElementById('profileNameInput').value = state.user.name;
+            
+            // รีเซ็ตสถานะการตั้งค่าฟอร์มใหม่
+            croppedImageData = null;
+            document.getElementById('profilePicInput').value = '';
+            document.getElementById('editProfileFormContainer').classList.remove('hidden');
+            document.getElementById('cropContainer').classList.add('hidden');
+            document.getElementById('cropContainer').classList.remove('flex');
+            document.getElementById('btnSubmitProfile').classList.remove('hidden');
+
+            // แสดงรูปประจำตัวปัจจุบัน (ดึงจาก mockUsers)
+            const preview = document.getElementById('currentProfilePicPreview');
+            const currentUserObj = mockUsers.find(u => u.username === state.user.id);
+            if (currentUserObj && currentUserObj.profilePic) {
+                preview.innerHTML = `<img src="${currentUserObj.profilePic}" class="w-full h-full object-cover">`;
+            } else {
+                preview.textContent = state.user.name.charAt(0);
+            }
+
             openModal('editProfileModal');
+        }
+
+        // ดักจับเมื่อมีการเลือกไฟล์รูปภาพ
+        document.getElementById('profilePicInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                croppedMimeType = file.type;
+                croppedExtension = file.name.substring(file.name.lastIndexOf('.'));
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // สลับ UI ไปหน้าจอ Crop
+                    document.getElementById('editProfileFormContainer').classList.add('hidden');
+                    document.getElementById('btnSubmitProfile').classList.add('hidden');
+                    document.getElementById('cropContainer').classList.remove('hidden');
+                    document.getElementById('cropContainer').classList.add('flex');
+                    
+                    const image = document.getElementById('cropImageTarget');
+                    image.src = event.target.result;
+                    
+                    if (profileCropper) profileCropper.destroy();
+                    
+                    // เริ่มต้นทำงาน Cropper.js
+                    profileCropper = new Cropper(image, {
+                        aspectRatio: 1, // อัตราส่วน 1:1
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        guides: true,
+                        center: true,
+                        background: false
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function cancelCrop() {
+            if (profileCropper) profileCropper.destroy();
+            document.getElementById('profilePicInput').value = '';
+            
+            // สลับ UI กลับไปฟอร์มปกติ
+            document.getElementById('cropContainer').classList.add('hidden');
+            document.getElementById('cropContainer').classList.remove('flex');
+            document.getElementById('editProfileFormContainer').classList.remove('hidden');
+            document.getElementById('btnSubmitProfile').classList.remove('hidden');
+        }
+
+        function confirmCrop() {
+            if (!profileCropper) return;
+            
+            // แคปเจอร์รูปที่ Crop แล้วเป็น Base64
+            const canvas = profileCropper.getCroppedCanvas({ width: 600, height: 600 }); // บังคับขนาดสูงสุดไม่ให้หนักเกินไป
+            croppedImageData = canvas.toDataURL(croppedMimeType);
+            
+            // แสดงรูปลงใน Preview วงกลม
+            document.getElementById('currentProfilePicPreview').innerHTML = `<img src="${croppedImageData}" class="w-full h-full object-cover">`;
+            
+            cancelCrop(); // ปิด UI Crop และกลับไปหน้าฟอร์ม (รูปจะคงอยู่ในตัวแปร croppedImageData)
         }
 
         async function submitEditProfile(e) {
             e.preventDefault();
             const newName = document.getElementById('profileNameInput').value.trim();
-            const picInput = document.getElementById('profilePicInput');
             if (!newName) return;
 
-            const btn = document.querySelector('#editProfileForm button[type="submit"]');
+            const btn = document.getElementById('btnSubmitProfile');
             btn.disabled = true;
 
-            // อัปเดต UI และ Local Storage ทันที (Optimistic UI)
+            // 1. อัปเดต UI และ Local Storage ทันที (Optimistic UI)
             if (localStorage.getItem('sim_user')) localStorage.setItem('sim_name', newName);
             else if (sessionStorage.getItem('sim_user')) sessionStorage.setItem('sim_name', newName);
             
             state.user.name = newName;
             document.getElementById('profileNameDisplay').textContent = newName;
             
-            // เปลี่ยนรูปโปรไฟล์ชั่วคราว (ถ้ามี)
-            if (picInput.files && picInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const picData = event.target.result;
-                    const updateIcon = (elId) => {
-                        const el = document.getElementById(elId);
-                        if (el) el.innerHTML = `<img src="${picData}" class="w-full h-full object-cover rounded-full">`;
-                    };
-                    updateIcon('profileIcon');
-                    updateIcon('mobileProfileIcon');
-                };
-                reader.readAsDataURL(picInput.files[0]);
-            } else {
-                 const updateIconText = (elId) => {
+            // เปลี่ยนรูปโปรไฟล์ชั่วคราวใน UI
+            if (croppedImageData) {
+                const updateIcon = (elId) => {
                     const el = document.getElementById(elId);
-                    if (el) el.textContent = newName.charAt(0);
+                    if (el) el.innerHTML = `<img src="${croppedImageData}" class="w-full h-full object-cover rounded-full">`;
                 };
-                updateIconText('profileIcon');
-                updateIconText('mobileProfileIcon');
+                updateIcon('profileIcon');
+                updateIcon('mobileProfileIcon');
+                
+                // แอบยัดรูปลงใน mockUsers ล่วงหน้า
+                const currentUserObj = mockUsers.find(u => u.username === state.user.id);
+                if (currentUserObj) currentUserObj.profilePic = croppedImageData;
+            } else {
+                // ถ้าไม่มีรูปใดๆ เลย ให้โชว์เป็นอักษรแทน
+                const currentUserObj = mockUsers.find(u => u.username === state.user.id);
+                if (!currentUserObj || !currentUserObj.profilePic) {
+                    const updateIconText = (elId) => {
+                        const el = document.getElementById(elId);
+                        if (el) el.textContent = newName.charAt(0);
+                    };
+                    updateIconText('profileIcon');
+                    updateIconText('mobileProfileIcon');
+                }
             }
 
-            // อัปเดตชื่อในรายการเอกสาร
+            // อัปเดตชื่อในรายการเอกสารเก่าของคนนี้
             mockFiles.forEach(f => {
                 if (f.uploaderId === state.user.id) f.uploaderName = newName;
             });
 
-            // ปิด Modal และแสดงแจ้งเตือนสำเร็จทันที
+            // ปิด Modal และแสดงแจ้งเตือนสำเร็จ
             closeModal('editProfileModal');
-            showToast('อัปเดต ชื่อ-สกุล ในระบบเรียบร้อยแล้ว', 'success');
+            showToast('อัปเดตข้อมูลโปรไฟล์เรียบร้อยแล้ว', 'success');
             
             if (state.view === 'mine' || state.view === 'all') renderList();
             
-            // ยกเลิกการ Disable ปุ่มทันทีที่ปิด Modal (หน่วงเวลา 300ms)
             setTimeout(() => {
                 document.getElementById('editProfileForm').reset();
                 btn.disabled = false;
             }, 300);
 
-            // ดำเนินการหลังบ้านเงียบๆ
-            const updateProfileData = async (picData, fileInfo = {}) => {
-                try {
-                    const payload = { action: 'updateUser', targetUser: state.user.id, name: newName };
-                    
-                    // หากมีรูปภาพ ให้แนบข้อมูลเพื่อส่งไปหลังบ้าน
-                    if (picData) {
-                        payload.picData = picData;
-                        payload.mimeType = fileInfo.mimeType;
-                        payload.extension = fileInfo.extension;
-                    }
-
-                    await fetch(WEB_APP_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify(payload)
-                    });
-                    fetchUsers(); // ดึงข้อมูลหลังบ้านยืนยันอีกครั้ง
-                } catch (error) {
-                    console.error('Failed to update profile in background:', error);
+            // 2. ดำเนินการหลังบ้านเงียบๆ
+            try {
+                const payload = { action: 'updateUser', targetUser: state.user.id, name: newName };
+                
+                // หากมีการ Crop รูป ให้ส่ง Base64 ไปด้วย (ตัด Header data:image/...;base64, ออก)
+                if (croppedImageData) {
+                    payload.picData = croppedImageData.split(',')[1];
+                    payload.mimeType = croppedMimeType;
+                    payload.extension = croppedExtension;
                 }
-            };
 
-            if (picInput.files && picInput.files[0]) {
-                const file = picInput.files[0];
-                const fileInfo = {
-                    mimeType: file.type,
-                    extension: file.name.substring(file.name.lastIndexOf('.'))
-                };
-                const reader = new FileReader();
-                // ตัดส่วนหัว base64 ออก (data:image/...;base64,) และส่งข้อมูล
-                reader.onload = (event) => updateProfileData(event.target.result.split(',')[1], fileInfo);
-                reader.readAsDataURL(file);
-            } else {
-                updateProfileData(null);
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                fetchUsers(); // ดึงข้อมูลหลังบ้านมายืนยันอีกครั้ง
+            } catch (error) {
+                console.error('Failed to update profile in background:', error);
             }
         }
 
@@ -3164,7 +3351,9 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
         // ================= ADMIN: SYSTEM SETTINGS =================
         let schoolData = {
             name: 'โรงเรียนดงมันพิทยาคม',
-            logo: null
+            logo: null,
+            currentYear: '2567',
+            yearsList: ['2567']
         };
 
         async function fetchSettings() {
@@ -3178,16 +3367,266 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
                 if (result.status === 'success') {
                     schoolData.name = result.settings.name || 'โรงเรียนดงมันพิทยาคม';
                     schoolData.logo = result.settings.logo || null;
+                    schoolData.currentYear = result.settings.currentYear || '2567';
+                    schoolData.yearsList = result.settings.yearsList || [schoolData.currentYear];
                     
                     const nameInput = document.getElementById('settingSchoolName');
                     if (nameInput) nameInput.value = schoolData.name;
+                    const yearInput = document.getElementById('settingCurrentYear');
+                    if (yearInput) yearInput.value = schoolData.currentYear;
                     
+                    renderYearsList(); // สั่งวาดรายการปีการศึกษา
                     updateGlobalUI();
                 }
             } catch (error) {
                 console.error('Error fetching settings:', error);
             }
         }
+
+        // ฟังก์ชันวาดรายการปีการศึกษาลงในหน้าเว็บ
+        function renderYearsList() {
+            const list = document.getElementById('academicYearsList');
+            if (!list) return;
+            list.innerHTML = '';
+            
+            // เรียงปีการศึกษาจากมากไปน้อย (ปีใหม่สุดอยู่บน)
+            const sortedYears = [...schoolData.yearsList].sort((a, b) => parseInt(b) - parseInt(a));
+            
+            sortedYears.forEach(year => {
+                const isCurrent = year === schoolData.currentYear;
+                const li = document.createElement('li');
+                li.className = 'px-4 py-2.5 flex items-center justify-between hover:bg-white dark:hover:bg-slate-800 transition-colors';
+                
+                let badge = isCurrent 
+                    ? `<span class="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200 dark:border-green-800/50 flex items-center gap-1"><i class="ph ph-check-circle"></i> ปัจจุบัน</span>` 
+                    : '';
+                    
+                let actionBtn = isCurrent
+                    ? ``
+                    : `<button type="button" onclick="confirmSetCurrentYear('${year}')" class="text-xs px-2.5 py-1 bg-slate-200 hover:bg-primary hover:text-white dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-primary dark:hover:text-white rounded-lg transition-colors font-medium">ตั้งเป็นปัจจุบัน</button>`;
+
+                // แถมปุ่มลบให้ด้วย (แต่ถ้าเป็นปีปัจจุบันจะลบไม่ได้)
+                let deleteBtn = !isCurrent
+                    ? `<button type="button" onclick="deleteYear('${year}')" class="text-slate-400 hover:text-red-500 transition-colors p-1" title="ลบปีการศึกษานี้"><i class="ph ph-trash text-lg"></i></button>`
+                    : `<div class="w-7"></div>`;
+
+                li.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-slate-800 dark:text-slate-200 text-sm">${year}</span>
+                        ${badge}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${actionBtn}
+                        ${deleteBtn}
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // ฟังก์ชันเสริมสำหรับบันทึกข้อมูลปีการศึกษาแบบพื้นหลัง
+        function saveAcademicYearSettings(silent = false) {
+            let payload = { action: 'saveSettings', schoolName: schoolData.name, currentYear: schoolData.currentYear, yearsList: schoolData.yearsList };
+            fetch(WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+            .then(r => r.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    if (!silent) showToast('อัปเดตข้อมูลภาคเรียน/ปีการศึกษาเรียบร้อย', 'success');
+                } else {
+                    showToast('เกิดข้อผิดพลาดในการบันทึก', 'error');
+                }
+            }).catch(() => showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error'));
+        }
+
+        function addNewYear() {
+            document.getElementById('addYearForm').reset();
+            openModal('addYearModal');
+        }
+
+        function submitAddYear(e) {
+            e.preventDefault();
+            
+            const input = document.getElementById('newYearInputModal');
+            const yearValue = input.value.trim();
+            
+            if (!yearValue) return;
+            
+            if (schoolData.yearsList.includes(yearValue)) {
+                showToast('มีภาคเรียน/ปีการศึกษานี้อยู่ในระบบแล้ว', 'error');
+                return;
+            }
+            
+            // 1. อัปเดตข้อมูลบนหน้าเว็บทันที
+            schoolData.yearsList.push(yearValue);
+            renderYearsList();
+            
+            // 2. ปิดหน้าต่างและแจ้งเตือนขวาล่างทันทีว่าเพิ่มสำเร็จ (Real-time Feel)
+            closeModal('addYearModal');
+            showToast(`เพิ่มภาคเรียน/ปีการศึกษา ${yearValue} สำเร็จ`, 'success');
+            
+            // 3. บันทึกข้อมูลอยู่พื้นหลัง (ส่ง true เพื่อไม่ให้แจ้งเตือนซ้ำ)
+            saveAcademicYearSettings(true); 
+        }
+
+        let pendingYearToSet = null;
+
+        // ฟังก์ชันเรียกเปิดหน้าต่างยืนยันตั้งค่าปี
+        function confirmSetCurrentYear(year) {
+            pendingYearToSet = year;
+            document.getElementById('confirmYearDisplay').textContent = year;
+            openModal('confirmSetYearModal');
+        }
+
+        // ฟังชันเมื่อกดยืนยันการตั้งค่าปี
+        document.getElementById('confirmSetYearBtn').addEventListener('click', () => {
+            if (pendingYearToSet) {
+                schoolData.currentYear = pendingYearToSet;
+                document.getElementById('settingCurrentYear').value = pendingYearToSet;
+                
+                renderYearsList();
+                updateGlobalUI(); 
+                closeModal('confirmSetYearModal');
+
+                // แจ้งเตือนสำเร็จทันทีที่หน้าเว็บ
+                showToast(`ตั้งค่าภาคเรียน/ปีการศึกษา ${pendingYearToSet} เป็นปัจจุบันแล้ว`, 'success');
+                
+                // สั่งบันทึกเงียบๆ หลังบ้าน โดยไม่ต้องแจ้งเตือนซ้ำอีกจากฟังก์ชัน saveAcademicYearSettings
+                let payload = { action: 'saveSettings', schoolName: schoolData.name, currentYear: schoolData.currentYear, yearsList: schoolData.yearsList };
+                fetch(WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.status !== 'success') showToast('เกิดข้อผิดพลาดในการบันทึกที่ฐานข้อมูล', 'error');
+                }).catch(() => showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error'));
+
+                setTimeout(() => fetchDocuments(), 500); // โหลดข้อมูลเอกสารของปีใหม่มาแสดง
+                
+                pendingYearToSet = null;
+            }
+        });
+        
+        let pendingYearToDelete = null;
+        let deleteYearRefDocs = 0; // ตัวแปรเก็บจำนวนเอกสารในภาคเรียนนั้น
+
+        // ฟังก์ชันลบปี (เฉพาะหน้า UI เรียก Modal)
+        function deleteYear(year) {
+            if (schoolData.currentYear === year) {
+                showToast('ไม่สามารถลบภาคเรียน/ปีการศึกษาที่กำลังใช้งานได้', 'error');
+                return;
+            }
+            pendingYearToDelete = year;
+            document.getElementById('deleteYearDisplay').textContent = year;
+
+            // ตรวจสอบจำนวนเอกสารที่มีอยู่ในปีการศึกษานี้
+            deleteYearRefDocs = mockFiles.filter(f => f.year === year).length;
+            
+            const warningArea = document.getElementById('deleteYearWarningArea');
+            const warningText = document.getElementById('deleteYearWarningText');
+            const checkbox = document.getElementById('forceDeleteYearCheckbox');
+            const input = document.getElementById('confirmDeleteYearInput');
+            const confirmBtn = document.getElementById('confirmDeleteYearBtn');
+
+            if (deleteYearRefDocs > 0) {
+                // กรณีมีเอกสาร: แสดงคำเตือน บังคับติ๊กถูก และพิมพ์ "ยืนยัน"
+                warningArea.classList.remove('hidden');
+                warningText.textContent = `ไม่สามารถลบได้ เนื่องจากมีเอกสาร ${deleteYearRefDocs} รายการอยู่ในภาคเรียนนี้`;
+                checkbox.checked = false;
+                input.value = '';
+                input.disabled = true;
+                confirmBtn.disabled = true;
+            } else {
+                // กรณีไม่มีเอกสาร: ซ่อนคำเตือน และเปิดให้กดปุ่มลบได้เลย
+                warningArea.classList.add('hidden');
+                confirmBtn.disabled = false;
+            }
+
+            openModal('confirmDeleteYearModal');
+        }
+
+        // ฟังก์ชันจัดการ Checkbox บังคับลบ
+        function toggleForceDeleteYear() {
+            const checkbox = document.getElementById('forceDeleteYearCheckbox');
+            const input = document.getElementById('confirmDeleteYearInput');
+            const confirmBtn = document.getElementById('confirmDeleteYearBtn');
+            
+            input.disabled = !checkbox.checked;
+            if (!checkbox.checked) {
+                input.value = '';
+                confirmBtn.disabled = true;
+            }
+        }
+
+        // ฟังก์ชันตรวจสอบช่องกรอก "ยืนยัน"
+        function checkForceDeleteYearInput() {
+            const input = document.getElementById('confirmDeleteYearInput');
+            const confirmBtn = document.getElementById('confirmDeleteYearBtn');
+            confirmBtn.disabled = (input.value !== 'ยืนยัน');
+        }
+
+        // ฟังก์ชันเมื่อกดยืนยันการลบปี
+        document.getElementById('confirmDeleteYearBtn').addEventListener('click', () => {
+            if (pendingYearToDelete) {
+                const targetYear = pendingYearToDelete;
+                
+                // 1. อัปเดตข้อมูลบนหน้าเว็บและลบออกทันที
+                schoolData.yearsList = schoolData.yearsList.filter(y => y !== targetYear);
+                
+                // หากเป็นการบังคับลบ ให้เคลียร์เอกสารบนหน้าจอด้วย
+                if (deleteYearRefDocs > 0) {
+                    mockFiles = mockFiles.filter(f => f.year !== targetYear);
+                    if (state.view === 'mine' || state.view === 'all') renderList();
+                }
+
+                renderYearsList();
+                closeModal('confirmDeleteYearModal');
+                showToast(`ลบภาคเรียน/ปีการศึกษา ${targetYear} ออกจากระบบแล้ว`, 'success');
+
+                // 2. สั่งบันทึกข้อมูลและลบโฟลเดอร์ไปที่หลังบ้านแบบเงียบๆ
+                let payload = { action: 'deleteAcademicYear', targetYear: targetYear, yearsList: schoolData.yearsList };
+                fetch(WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.status === 'success' && result.deletedDocs) {
+                        fetchDocuments(); // หากมีการลบไฟล์จริงๆ ให้ดึงข้อมูลมาใหม่ให้ชัวร์
+                    }
+                }).catch(() => showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error'));
+
+                pendingYearToDelete = null;
+                deleteYearRefDocs = 0;
+            }
+        });
+
+        // ฟังก์ชันเมื่อกดยืนยันการลบปี
+        document.getElementById('confirmDeleteYearBtn').addEventListener('click', () => {
+            if (pendingYearToDelete) {
+                const targetYear = pendingYearToDelete;
+                
+                // 1. อัปเดตข้อมูลบนหน้าเว็บและลบออกทันที
+                schoolData.yearsList = schoolData.yearsList.filter(y => y !== targetYear);
+                
+                // หากเป็นการบังคับลบ ให้เคลียร์เอกสารบนหน้าจอด้วย
+                if (deleteYearRefDocs > 0) {
+                    mockFiles = mockFiles.filter(f => f.year !== targetYear);
+                    if (state.view === 'mine' || state.view === 'all') renderList();
+                }
+
+                renderYearsList();
+                closeModal('confirmDeleteYearModal');
+                showToast(`ลบภาคเรียน/ปีการศึกษา ${targetYear} ออกจากระบบแล้ว`, 'success');
+
+                // 2. สั่งบันทึกข้อมูลและลบโฟลเดอร์ไปที่หลังบ้านแบบเงียบๆ
+                let payload = { action: 'deleteAcademicYear', targetYear: targetYear, yearsList: schoolData.yearsList };
+                fetch(WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+                .then(r => r.json())
+                .then(result => {
+                    if (result.status === 'success' && result.deletedDocs) {
+                        fetchDocuments(); // หากมีการลบไฟล์จริงๆ ให้ดึงข้อมูลมาใหม่ให้ชัวร์
+                    }
+                }).catch(() => showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error'));
+
+                pendingYearToDelete = null;
+                deleteYearRefDocs = 0;
+            }
+        });
 
         // พรีวิวรูปตอนเลือกไฟล์
         document.getElementById('settingLogoInput').addEventListener('change', function(e) {
@@ -3216,6 +3655,12 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
 
         // แยกฟังก์ชันอัปเดต UI ออกมาไว้ข้างนอกเพื่อให้เรียกใช้งานได้อิสระ
         function updateGlobalUI() {
+            // อัปเดตการแสดงผลปีการศึกษาบน Navbar
+            const navYearDisplay = document.getElementById('navYearDisplay');
+            if (navYearDisplay && schoolData.currentYear) {
+                navYearDisplay.textContent = schoolData.currentYear;
+            }
+
             // ตั้งค่า Favicon
             if (schoolData.logo) {
                 let favicon = document.getElementById('dynamicFavicon');
@@ -3260,23 +3705,36 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
         }
 
         function submitSettings(e) {
-            e.preventDefault();
-            const newName = document.getElementById('settingSchoolName').value.trim();
-            const logoInput = document.getElementById('settingLogoInput');
-            const btnSubmit = document.getElementById('btnSubmitSettings');
-            const progressArea = document.getElementById('settingsProgressArea');
-            const progressBar = document.getElementById('settingsProgressBar');
-            const progressText = document.getElementById('settingsProgressText');
+              e.preventDefault();
+              const newName = document.getElementById('settingSchoolName').value.trim();
+              const logoInput = document.getElementById('settingLogoInput');
+              const btnSubmit = document.getElementById('btnSubmitSettings');
+              const progressArea = document.getElementById('settingsProgressArea');
+              const progressBar = document.getElementById('settingsProgressBar');
+              const progressText = document.getElementById('settingsProgressText');
 
-            if (!newName) return;
+              // ดึงค่าปีปัจจุบันจาก Input ที่ซ่อนไว้ ป้องกันการถูกรีเซ็ตจากระบบดึงข้อมูลพื้นหลัง
+              const currentYearValue = document.getElementById('settingCurrentYear').value;
+              
+              // ดึงรายการปีการศึกษาทั้งหมดจากหน้า UI โดยตรง เพื่อป้องกันการสูญหายของข้อมูลที่เพิ่งเพิ่ม
+              const yearsListEls = document.querySelectorAll('#academicYearsList span.font-medium');
+              const currentYearsList = yearsListEls.length > 0 ? Array.from(yearsListEls).map(el => el.textContent) : schoolData.yearsList;
 
-            btnSubmit.disabled = true;
-            let payload = { action: 'saveSettings', schoolName: newName };
+              if (!newName) return;
 
-            // กรณีบันทึกแค่ชื่อโรงเรียน (ไม่ได้เลือกไฟล์โลโก้ใหม่)
+              btnSubmit.disabled = true;
+              let payload = { 
+                  action: 'saveSettings', 
+                  schoolName: newName, 
+                  currentYear: currentYearValue, 
+                  yearsList: currentYearsList 
+              };
+
+            // กรณีบันทึกแค่ชื่อโรงเรียนและปีการศึกษา (ไม่ได้เลือกไฟล์โลโก้ใหม่)
             if (!logoInput.files || logoInput.files.length === 0) {
                 // 1. อัปเดตหน้าจอและ Local state ทันที (Background Task)
                 schoolData.name = newName;
+                // ข้อมูล currentYear และ yearsList อัปเดตในตัวแปรไปแล้วจากฟังก์ชันตั้งค่าด้านบน
                 updateGlobalUI();
                 showToast('บันทึกการตั้งค่าระบบเรียบร้อยแล้ว', 'success');
                 
@@ -3506,8 +3964,8 @@ actionsHtml += `<button onclick="downloadDoc('${file.id}')" class="w-9 h-9 flex 
             
             if(!notifList || !notifBadge) return;
 
-            // ค้นหางานที่สถานะเป็น 'รอตรวจ'
-            const pendingFiles = mockFiles.filter(f => f.status === 'รอตรวจ' || f.status === 'รอตรวจ (ส่งใหม่)');
+            // ค้นหางานที่สถานะเป็น 'รอตรวจ' และต้องเป็นปีการศึกษาปัจจุบันเท่านั้น
+            const pendingFiles = mockFiles.filter(f => (f.status === 'รอตรวจ' || f.status === 'รอตรวจ (ส่งใหม่)') && f.year === schoolData.currentYear);
             
             if (pendingFiles.length > 0) {
                 notifBadge.textContent = pendingFiles.length;
